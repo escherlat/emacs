@@ -19,8 +19,7 @@
 ;; Colors :)
 (require 'color-theme)
 (color-theme-initialize)
-(load-file "~/.emacs.d/color-theme-twilight.el")
-(color-theme-twilight)
+(color-theme-comidia)
 
 (require 'setnu)
 (setnu-mode t)
@@ -61,7 +60,7 @@
    (goto-line orig-line)))
 (global-set-key "\C-ct" 'perltidy)
  
-(global-set-key "\C-ct" 'perltidy)
+;;(global-set-key "\C-ct" 'perltidy)
  
 (defun perl-tidy-full ()
   (interactive)
@@ -81,3 +80,24 @@
                  '("\\.xhtml" . nxml-mode))
                 auto-mode-alist))
 (add-hook 'nxml-mode-hook 'turn-on-auto-fill)
+
+(defun pek-vc-git-annotate-command (file buf &optional rev)
+ (let ((name (file-relative-name file)))
+   ;; 'short' date, instead of iso; see modified regex below to
+   ;;   get coloring to work
+   (vc-git-command buf 'async name "blame" "--date=short" rev)))
+
+(defun pek-vc-git-annotate-time ()
+ (and (re-search-forward
+       ;; HASH           (     1.year    -  2.month   -  3.day                                                                                                                                                   
+       "[0-9a-f]+[^()]+(.* \\([0-9]+\\)-\\([0-9]+\\)-\\([0-9]+\\)" nil t)
+      (vc-annotate-convert-time
+       ;; send 0 for sec, min, hour                                                                                                                                                                              
+       (apply #'encode-time 0 0 0
+              ;; day, month, year from the match above                                                                                                                                                       
+              (mapcar (lambda (match)
+                        (string-to-number (match-string match)))
+                      '(3 2 1))))))
+
+(eval-after-load "vc-git" '(fset 'vc-git-annotate-command 'pek-vc-git-annotate-command))
+(eval-after-load "vc-git" '(fset 'vc-git-annotate-time 'pek-vc-git-annotate-time))
