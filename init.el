@@ -6,12 +6,16 @@
 (ido-mode t)
 
 ;; The following lines are always needed.  Choose your own keys.
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+;; (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
+(setq org-log-done 'time)
 (add-hook 'org-mode-hook 'turn-on-font-lock)  ; Org buffers only
 (transient-mark-mode 1)
+
+(setq org-agenda-files (list "~/Dropbox/cPanel/Notes"))
 
 ;; Better line numbering
 (setq linum-format "%d ")
