@@ -1,4 +1,4 @@
-(setq load-path (cons "~/.emacs.d" load-path))
+(setq load-path (cons "~/.emacs.d/lisp" load-path))
 
 (load "nxml-mode/rng-auto.el")
 
